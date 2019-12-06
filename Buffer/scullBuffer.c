@@ -178,7 +178,7 @@ ssize_t scullBuffer_read(
 	
 	printk(KERN_DEBUG "scullBuffer: reading %d bytes\n", (int)count);
 	/* copy data to user space buffer */
-	if (copy_to_user(buf, dev->bufferPtr + *f_pos, count)) {
+	if (raw_copy_to_user(buf, dev->bufferPtr + *f_pos, count)) {
 		countRead = -EFAULT;
 		goto out;
 	}
@@ -214,7 +214,7 @@ ssize_t scullBuffer_write(struct file *filp, const char __user *buf, size_t coun
 		count = scull_size - *f_pos;
 	printk(KERN_DEBUG "scullBuffer: writing %d bytes \n", (int)count);
 	/* write data to the buffer */
-	if (copy_from_user(dev->bufferPtr + *f_pos, buf, count)) {
+	if (raw_copy_from_user(dev->bufferPtr + *f_pos, buf, count)) {
 		countWritten = -EFAULT;
 		goto out;
 	}
