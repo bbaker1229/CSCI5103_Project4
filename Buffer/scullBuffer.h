@@ -18,10 +18,8 @@
 #include <linux/wait.h>
 #include <linux/sched.h>
 #include <linux/ioctl.h> 
-
-//#include <asm/system.h>		
+		
 #include <asm/system_misc.h>
-//#include <asm/system_info.h>
 #include <asm/uaccess.h>	
 
 #define SCULL_MAJOR 0   /* dynamic major by default */
