@@ -166,7 +166,7 @@ ssize_t scullBuffer_read(
 	if (down_interruptible(&dev->sem))
 		return -ERESTARTSYS;	
 		
-	printk(KERN_DEBUG "scullBuffer: read called count= %d\n", count);
+	printk(KERN_DEBUG "scullBuffer: read called count= %ld\n", count);
 	printk(KERN_DEBUG "scullBuffer: cur pos= %lld, size= %d \n", *f_pos, dev->size);
 	
 	/* have we crossed reading the device? */
@@ -205,7 +205,7 @@ ssize_t scullBuffer_write(struct file *filp, const char __user *buf, size_t coun
 		return -ERESTARTSYS;	
 	
 	/* have we crossed the size of the buffer? */
-	printk(KERN_DEBUG "scullBuffer: write called count= %d\n", count);
+	printk(KERN_DEBUG "scullBuffer: write called count= %ld\n", count);
 	printk(KERN_DEBUG "scullBuffer: cur pos= %lld, size= %d \n", *f_pos, (int)dev->size);
 	if( *f_pos >= scull_size)
 		goto out;
