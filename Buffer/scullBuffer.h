@@ -19,18 +19,19 @@
 #include <linux/sched.h>
 #include <linux/ioctl.h> 
 		
-#include <asm/system_misc.h>
-#include <asm/uaccess.h>	
+#include <asm/switch_to.h>
+#include <linux/uaccess.h>	
 
 #define SCULL_MAJOR 0   /* dynamic major by default */
 #define SCULL_NR_DEVS 1    /* scullBuffer0 */
-#define SCULL_SIZE 4096 /* default size of buffer */
+#define SCULL_SIZE 4096  /* default size of buffer */
 
 struct scull_buffer {
 	void *bufferPtr; /* pointer to the data buffer */
 	struct semaphore sem;  /* mutual exclusion semaphore     */
 	int readerCnt; /* count of no of readers accessing the device */
 	int writerCnt; /* count of no of writers accessing the device */
+	int head; /* beggining of data */
 	int size; /* amount of data held in the buffer currently */
 	struct cdev cdev;	  /* Char device structure		*/
 };

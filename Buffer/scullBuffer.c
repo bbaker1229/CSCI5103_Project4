@@ -54,11 +54,12 @@ int scull_init_module(void)
 		scull_cleanup_module();
 		return -ENOMEM;
 	}
-	
+
 	/* Init the count vars */
 	scullBufferDevice.readerCnt = 0;
 	scullBufferDevice.writerCnt = 0;
 	scullBufferDevice.size = 0;
+	scullBufferDevice.head = 0;
 		
 	/* Initialize the semaphore*/
 	sema_init(&scullBufferDevice.sem, 1);
@@ -127,6 +128,8 @@ int scullBuffer_open(struct inode *inode, struct file *filp)
 		dev->readerCnt++;
 	if (filp->f_mode & FMODE_WRITE)
 		dev->writerCnt++;
+
+	printk("scullBuffer: open reader count: %d, writer count: %d\n", dev->readerCnt, dev->writerCnt);
 		
 	up(&dev->sem);
 	return 0;
@@ -145,6 +148,8 @@ int scullBuffer_release(struct inode *inode, struct file *filp)
 		dev->readerCnt--;
 	if (filp->f_mode & FMODE_WRITE)
 		dev->writerCnt--;
+
+	printk("scullBuffer: close reader count: %d, writer count: %d\n", dev->readerCnt, dev->writerCnt);
 		
 	up(&dev->sem);
 	return 0;
