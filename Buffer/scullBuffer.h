@@ -25,14 +25,18 @@
 #define SCULL_MAJOR 0   /* dynamic major by default */
 #define SCULL_NR_DEVS 1    /* scullBuffer0 */
 #define SCULL_SIZE 4096  /* default size of buffer */
+#define SCULL_ITEM_SIZE 512
+#define SCULL_ITEM_COUNT 8
 
 struct scull_buffer {
 	void *bufferPtr; /* pointer to the data buffer */
+	int itemDataCnt[SCULL_ITEM_COUNT]; /* pointer to data counts */
 	struct semaphore sem;  /* mutual exclusion semaphore     */
 	int readerCnt; /* count of no of readers accessing the device */
 	int writerCnt; /* count of no of writers accessing the device */
-	int head; /* beggining of data */
-	int size; /* amount of data held in the buffer currently */
+	int start; /* first item */
+	int end; /* last item */
+	int itemCnt; /* number of items currently held in buffer */
 	struct cdev cdev;	  /* Char device structure		*/
 };
 
