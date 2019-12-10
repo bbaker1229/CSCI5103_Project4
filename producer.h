@@ -1,3 +1,3 @@
 void producer_init();
-void producer_write();
+int producer_write();
 void producer_close();

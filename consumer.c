@@ -19,8 +19,17 @@ void consumer_init()
 
 }
 
-void consumer_read()
+int consumer_read()
 {
+	char buf[512];
+	int len, retval;
+
+	read(consumer_fd, &len, sizeof(int));
+	retval = read(consumer_fd, buf, len);
+
+	printf("%s\n", buf);
+
+	return retval;	
 }
 
 void consumer_close()

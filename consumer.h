@@ -1,3 +1,3 @@
 void consumer_init();
-void consumer_read();
+int consumer_read();
 void consumer_close();

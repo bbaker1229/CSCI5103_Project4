@@ -18,8 +18,19 @@ void producer_init()
 	}
 }
 
-void producer_write()
+int producer_write()
 {
+	char buf[512];
+	int len, retval;
+
+	printf("Enter some text:\n");
+	scanf("%512s", buf);
+
+	len = strlen(buf);
+	write(producer_fd, &len, sizeof(int));
+	retval = write(producer_fd, buf, strlen(buf));
+
+	return retval;
 }
 
 void producer_close()
