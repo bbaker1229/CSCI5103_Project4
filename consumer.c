@@ -22,10 +22,9 @@ void consumer_init()
 int consumer_read()
 {
 	char buf[512];
-	int len, retval;
+	int retval;
 
-	read(consumer_fd, &len, sizeof(int));
-	retval = read(consumer_fd, buf, len);
+	retval = read(consumer_fd, buf, strlen(buf));
 
 	printf("%s\n", buf);
 

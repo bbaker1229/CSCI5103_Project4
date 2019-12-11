@@ -21,13 +21,11 @@ void producer_init()
 int producer_write()
 {
 	char buf[512];
-	int len, retval;
+	int retval;
 
 	printf("Enter some text:\n");
-	scanf("%512s", buf);
+	fgets(buf, sizeof(buf), stdin);
 
-	len = strlen(buf);
-	write(producer_fd, &len, sizeof(int));
 	retval = write(producer_fd, buf, strlen(buf));
 
 	return retval;

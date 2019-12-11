@@ -12,6 +12,9 @@ module_param(scull_size, int, S_IRUGO);
 MODULE_AUTHOR("Piyush");
 MODULE_LICENSE("Dual BSD/GPL");
 
+static DECLARE_WAIT_QUEUE_HEAD(reader_wq);
+static DECLARE_WAIT_QUEUE_HEAD(writer_wq);
+
 struct scull_buffer scullBufferDevice;	/* instance of the scullBuffer structure */
 
 /* file ops struct indicating which method is called for which io operation */
@@ -177,7 +180,11 @@ ssize_t scullBuffer_read(
 		if (dev->writerCnt == 0) {
 			goto out;
 		}
-		// release semaphore and sleep/wait
+		/* sleep while minding the semaphore */
+		up(&dev->sem);
+		wait_event_interruptible(reader_wq, dev->itemCnt > 0);
+		if (down_interruptible(&dev->sem))
+			return -ERESTARTSYS;	
 	}	
 	
 	printk(KERN_DEBUG "scullBuffer: reading %d bytes\n", dev->itemDataCnt[dev->start]);
@@ -190,6 +197,7 @@ ssize_t scullBuffer_read(
 	countRead = dev->itemDataCnt[dev->start];
 	dev->start = (dev->start + 1) % SCULL_ITEM_COUNT;
 	dev->itemCnt--;	
+	wake_up_interruptible(&writer_wq);
 	
 	/* now we're done release the semaphore */
 	out: 
@@ -213,7 +221,11 @@ ssize_t scullBuffer_write(struct file *filp, const char __user *buf, size_t coun
 		if (dev->readerCnt == 0) {
 			goto out;
 		}
-		// release semaphore and sleep/wait
+		/* sleep while minding the semaphore */
+		up(&dev->sem);
+		wait_event_interruptible(reader_wq, dev->itemCnt < SCULL_ITEM_COUNT);
+		if (down_interruptible(&dev->sem))
+			return -ERESTARTSYS;	
 	}	
 	
 	/* have we crossed the size of the buffer? */
@@ -234,6 +246,7 @@ ssize_t scullBuffer_write(struct file *filp, const char __user *buf, size_t coun
 	dev->end = (dev->end + 1) % SCULL_ITEM_COUNT;
 	dev->itemCnt++;
 	countWritten = count;
+	wake_up_interruptible(&reader_wq);
 
 	printk(KERN_DEBUG "scullBuffer: new item count= %d\n", dev->itemCnt);
 

@@ -1,7 +1,7 @@
 GCC=/usr/bin/gcc
 
 scull_test: consumer.o producer.o main.o
-	$(GCC) consumer.o producer.o main.o -o scull_test
+	$(GCC) -pthread consumer.o producer.o main.o -o scull_test
 
 consumer.o: consumer.c consumer.h
 	$(GCC) -Wall consumer.c -c -o consumer.o -g
