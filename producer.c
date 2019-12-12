@@ -20,7 +20,7 @@ void producer_init()
 
 int producer_write()
 {
-	char buf[512];
+	char buf[512] = {0,};
 	int retval;
 
 	printf("Enter some text:\n");

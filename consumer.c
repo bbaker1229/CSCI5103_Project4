@@ -21,7 +21,7 @@ void consumer_init()
 
 int consumer_read()
 {
-	char buf[512];
+	char buf[512] = {0,};
 	int retval;
 
 	retval = read(consumer_fd, buf, strlen(buf));
