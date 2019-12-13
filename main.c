@@ -4,12 +4,12 @@
 #include "consumer.h"
 #include "producer.h"
 
-pthread_t consumer_handle;
-pthread_t producer_handle;
+//pthread_t consumer_handle;
+//pthread_t producer_handle;
 
 void *consumer_thread(void* argument)
 {
-	int cons_size;
+	//int cons_size;
 	consumer_init();
 
 	while( consumer_read() > 0) {
@@ -36,11 +36,20 @@ void *producer_thread(void* argument)
 
 int main()
 {
-	pthread_create(&producer_handle, NULL, producer_thread, NULL);
-	pthread_create(&consumer_handle, NULL, consumer_thread, NULL);
+	int i;
 
-	pthread_join(consumer_handle, NULL);
-	pthread_join(producer_handle, NULL);
+	pthread_t consumer_handle;
+	pthread_t producer_handle;
+	
+	pthread_create(&producer_handle, NULL, producer_thread, NULL);
+	for (i = 0; i < 3; i++) {
+		pthread_create(&consumer_handle, NULL, consumer_thread, NULL);
+	}
+
+	//pthread_join(consumer_handle, NULL);
+	//pthread_join(producer_handle, NULL);
+
+	pthread_exit(NULL);
 
 	printf("consumers and producers finished!\n");
 

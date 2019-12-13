@@ -23,10 +23,19 @@ int producer_write()
 	char buf[512] = {0,};
 	int retval;
 
-	printf("Enter some text:\n");
-	fgets(buf, sizeof(buf), stdin);
+	FILE *f;
 
-	retval = write(producer_fd, buf, strlen(buf));
+	f = fopen("readthis.txt", "r");
+
+	fscanf(f, "%[^\n]", buf);
+	retval = write(producer_fd, buf, sizeof(buf));
+
+//	printf("Enter some text:\n");
+//	fgets(buf, sizeof(buf), stdin);
+
+//	retval = write(producer_fd, buf, strlen(buf));
+
+	fclose(f);
 
 	return retval;
 }
