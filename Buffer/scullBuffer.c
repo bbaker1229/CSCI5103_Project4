@@ -9,7 +9,7 @@ module_param(scull_major, int, S_IRUGO);
 module_param(scull_minor, int, S_IRUGO);
 module_param(scull_size, int, S_IRUGO);
 
-MODULE_AUTHOR("Piyush");
+MODULE_AUTHOR("Alice Anderegg, Bryan Baker, Hailin Archer");
 MODULE_LICENSE("Dual BSD/GPL");
 
 static DECLARE_WAIT_QUEUE_HEAD(reader_wq);
