@@ -21,6 +21,12 @@
 #define BLOCK_SIZE 32
 
 int main(int argc, char **argv){
+
+    if (argc != 5) {
+        printf("Please specify four arguments\n");
+        return 0;
+    }
+
     int producer_count = atoi(argv[1]);
     int producer_item = atoi(argv[2]);
     int consumer_count = atoi(argv[3]);
