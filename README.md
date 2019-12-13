@@ -37,11 +37,13 @@ The logs will appear in the test directory.
 sudo ln -s /lib/modules/4.15.0-72-generic/build/arch/arm64/include/asm /lib/modules/4.15.0-72-generic/build/include/asm
 ```
 
-- Updated scullbuffer.h to use <asm/swithc_to.h> rather than <asm/system.h>
+- Updated scullBuffer.h to use <asm/switch_to.h> rather than <asm/system.h>
 
-- Updated scullbuffer.h to use <linux/uaccess.h> rather than <asm/uaccess.h>
+- Updated scullBuffer.h to use <linux/uaccess.h> rather than <asm/uaccess.h>
 
-- Updated scullbuffer.c to use raw_copy_(from/to)_user rather than copy_(from/to)_user
+- Updated scullBuffer.c to use raw_copy_from_user rather than copy_from_user
+
+- Updated scullBuffer.c to use raw_copy_to_user rather than copy_to_user
 
 - Installed Python:
 ```
