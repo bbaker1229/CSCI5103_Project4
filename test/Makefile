@@ -21,4 +21,4 @@ prodcons.o: prodcons.c
 	$(GCC) -Wall prodcons.c -c -o prodcons.o -g
 
 clean:
-	rm consumer producer prodcons *.o *.log
+	rm consumer producer prodcons *.o
