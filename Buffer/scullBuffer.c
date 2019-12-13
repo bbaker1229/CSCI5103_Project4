@@ -148,10 +148,14 @@ int scullBuffer_release(struct inode *inode, struct file *filp)
 	if (down_interruptible(&dev->sem) )
 		return -ERESTARTSYS;
 		
-	if (filp->f_mode & FMODE_READ)
+	if (filp->f_mode & FMODE_READ) {
 		dev->readerCnt--;
-	if (filp->f_mode & FMODE_WRITE)
+		wake_up_interruptible(&writer_wq);
+	}
+	if (filp->f_mode & FMODE_WRITE) {
 		dev->writerCnt--;
+		wake_up_interruptible(&reader_wq);
+	}
 
 	printk("scullBuffer: close reader count: %d, writer count: %d\n", dev->readerCnt, dev->writerCnt);
 		
@@ -182,7 +186,9 @@ ssize_t scullBuffer_read(
 		}
 		/* sleep while minding the semaphore */
 		up(&dev->sem);
+		printk(KERN_DEBUG "scullBuffer: reader sleeping\n");
 		wait_event_interruptible(reader_wq, dev->itemCnt > 0);
+		printk(KERN_DEBUG "scullBuffer: reader woken\n");
 		if (down_interruptible(&dev->sem))
 			return -ERESTARTSYS;	
 	}	
@@ -198,6 +204,8 @@ ssize_t scullBuffer_read(
 	dev->start = (dev->start + 1) % SCULL_ITEM_COUNT;
 	dev->itemCnt--;	
 	wake_up_interruptible(&writer_wq);
+
+	printk(KERN_DEBUG "scullBuffer: read new item count= %d\n", dev->itemCnt);
 	
 	/* now we're done release the semaphore */
 	out: 
@@ -223,7 +231,9 @@ ssize_t scullBuffer_write(struct file *filp, const char __user *buf, size_t coun
 		}
 		/* sleep while minding the semaphore */
 		up(&dev->sem);
-		wait_event_interruptible(reader_wq, dev->itemCnt < SCULL_ITEM_COUNT);
+		printk(KERN_DEBUG "scullBuffer: writer sleeping\n");
+		wait_event_interruptible(writer_wq, dev->itemCnt < SCULL_ITEM_COUNT);
+		printk(KERN_DEBUG "scullBuffer: writer woken\n");
 		if (down_interruptible(&dev->sem))
 			return -ERESTARTSYS;	
 	}	
